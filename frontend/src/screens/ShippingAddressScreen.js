@@ -1,20 +1,44 @@
-import React, { useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button'
+import { Store } from '../Store';
+import CheckoutSteps from '../components/CheckoutSteps';
 
 function ShippingAddressScreen() {
-  const [fullName, setFullName] = useState('');
-  const [address, setAddress] = useState('');
-  const [city, setCity] = useState('');
-  const [postalCode, setPostalCode] = useState('');
-  const [country, setCountry] = useState('');
+  const navigate = useNavigate();
+  const {state, dispatch: ctxDispatch} = useContext(Store)
+  const { userInfo } = state;
+  const { cart: { shippingAddress } } = state;
+  const [fullName, setFullName] = useState(shippingAddress.fullName || '');
+  const [address, setAddress] = useState(shippingAddress.address || '');
+  const [city, setCity] = useState(shippingAddress.city || '');
+  const [postalCode, setPostalCode] = useState(shippingAddress.postalCode || '');
+  const [country, setCountry] = useState(shippingAddress.country || '');
+  
+
+  useEffect(()=>{
+    if(userInfo == null) {
+      navigate('/signin?redirect=/shipping')
+    }
+  }, [userInfo, navigate])
+
+  const submitHandler = (e) => {
+    e.preventDefault()
+    ctxDispatch({type: 'SET_SHIPPING_ADDRESS', payload: {fullName, address, city, postalCode, country}});
+    navigate('/payment');
+  }
+
   return (
     <div>
       <Helmet>
         <title>Shipping address</title>
       </Helmet>
+      <CheckoutSteps step1 step2 />
+      <div className="container small-container">
       <h1 className="mb-3">Shipping address</h1>
-      <Form>
+      <Form onSubmit={submitHandler} >
         <Form.Group>
           <Form.Label>Full Name</Form.Label>
           <Form.Control onChange={(e)=>setFullName(e.target.value)} value={fullName} required />
@@ -36,9 +60,10 @@ function ShippingAddressScreen() {
           <Form.Control onChange={(e)=>setCountry(e.target.value)} value={country} />
         </Form.Group>
         <div className="mt-3">
-          <Button>Continue</Button>
+          <Button type="submit">Continue</Button>
         </div>
       </Form>
+      </div>
     </div>
   )
 }

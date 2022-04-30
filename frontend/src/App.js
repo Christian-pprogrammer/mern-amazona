@@ -3,7 +3,7 @@
 import 'react-toastify/dist/ReactToastify.css'
 
 import { useContext } from 'react'
-import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Link, useNavigate } from 'react-router-dom';
 import HomeScreen from './screens/HomeScreen';
 import ProductScreen from './screens/ProductScreen';
 import CartScreen from './screens/CartScreen';
@@ -19,12 +19,21 @@ import { ToastContainer } from 'react-toastify'
 
 import {Store} from './Store';
 import ShippingAddressScreen from './screens/ShippingAddressScreen';
+import SignupScreen from './screens/SignupScreen';
+import PaymentMethodScreen from './screens/PaymentMethodScreen';
+import PlaceOrderScreen from './screens/PlaceOrderScreen';
 
 function App() {
   const {state, dispatch: ctxDispatch} = useContext(Store);
   const {cart, userInfo} = state;
+  
   const signoutHandler = () => {
+    localStorage.removeItem('userInfo');
+    localStorage.removeItem('shippingAddress');
+    localStorage.removeItem('cartItems');
+    localStorage.removeItem('paymentMethod')
     ctxDispatch({type: 'SIGNOUT_USER'});
+    window.location.href = "/signin"
   }
   return (
     <BrowserRouter>
@@ -55,7 +64,7 @@ function App() {
                         <NavDropdown.Item>Order history</NavDropdown.Item>
                       </LinkContainer>
                       <NavDropdown.Divider />
-                      <Link className='dropdown-item' to="signout" onClick={signoutHandler}>
+                      <Link className='dropdown-item' to="#signout" onClick={signoutHandler}>
                         Sign out
                       </Link>
                     </NavDropdown>
@@ -71,7 +80,10 @@ function App() {
               <Route path='/product/:slug' element={<ProductScreen />} />
               <Route path='/cart' element={<CartScreen />} />
               <Route path='/signin' element={<SigninScreen />} />
+              <Route path='/signup' element={<SignupScreen />} />
               <Route path='/shipping' element={<ShippingAddressScreen />} />
+              <Route path='/payment' element={<PaymentMethodScreen />} />
+              <Route path='/placeorder' element={<PlaceOrderScreen />} />
               <Route path='/' element={<HomeScreen />} />
             </Routes>
           </Container>

@@ -22,15 +22,34 @@ const cartReducer = (state, action) => {
     case 'SIGNIN_USER':
       return {...state, userInfo: action.payload}
 
+    case 'SET_SHIPPING_ADDRESS':
+      localStorage.setItem('shippingAddress', JSON.stringify(action.payload));
+      return {...state, cart: {...state.cart, shippingAddress: action.payload}}
+
+    case 'SET_PAYMENT_METHOD':
+      localStorage.setItem('paymentMethod', action.payload);
+      return {...state, cart: {...state.cart, paymentMethod: action.payload}}
+
     case 'SIGNOUT_USER':
-      return {...state, userInfo: null}
+      console.log('hello signout')
+      return {...state, cart: {...state.cart, cartItems: [], shippingAddress: {}}}
+
     default:
       return {...state}
+    
   }
 }
 const initialState = {
   cart: {
-    cartItems: localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : []
+    cartItems: localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : [],
+    shippingAddress: localStorage.getItem('shippingAddress') ? JSON.parse(localStorage.getItem('shippingAddress')) : {
+      fullName: '',
+      address: '',
+      city: '',
+      postalCode: '',
+      country: ''
+    },
+    paymentMethod: localStorage.getItem('paymentMethod') ? localStorage.getItem('paymentMethod') : ''
   },
   userInfo: localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')):null
 };

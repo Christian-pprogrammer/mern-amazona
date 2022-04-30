@@ -52,3 +52,8 @@ main {
 .small-container {
   max-width: 600px;
 }
+
+div.active {
+  border-bottom: 0.2rem solid #f08000;
+  color: #f08000;
+}
