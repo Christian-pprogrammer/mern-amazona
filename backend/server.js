@@ -21,6 +21,10 @@ mongoose
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+app.get('/api/keys/paypal', (req,res) => {
+  res.send(process.env.PAYPAL_CLIENT_ID || 'sb');
+})
 app.use('/api/seed', seedRouter);
 app.use('/api/users', userRouter);
 app.use('/api/products', productRouter);
